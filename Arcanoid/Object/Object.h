@@ -1,6 +1,9 @@
 #pragma once
 
+#include "../EventManager/EventManager.h"
+
 #include <SFML/Graphics.hpp>
+#include <iostream>
 
 class Object {
 protected:
@@ -8,10 +11,17 @@ protected:
 	float width = 0, height = 0;
 	float speedX = 0, speedY = 0;
 
+	bool isHovered = false;
+
+	EventManager& eventManager = EventManager::getInstance();
+
 public:
 	Object();
 	Object(float x, float y);
 	Object(float x, float y, float width, float height);
+	virtual ~Object();
+
+	void baseHandleSFMLEvent(sf::Event* event, sf::RenderWindow* window);
 
 	virtual void draw(sf::RenderWindow *window) = 0;
 

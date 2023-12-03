@@ -8,12 +8,20 @@
 
 class Game : public BaseScene {
 private:
+	bool isStarted = false;
+
+	int health = 5;
 	int blocksCount = 0;
 	int platformsCount = 0;
 
 	Block** blocks;
 	Platform** platforms;
 	Ball* ball;
+
+	sf::Texture *heartTexture;
+	sf::Sprite *heart;
+
+	void setInitBallPosition();
 
 public:
 	Game();

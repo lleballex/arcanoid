@@ -6,8 +6,8 @@
 
 // TODO: fix coordinates, radius, speed
 Ball::Ball() : Circle(10, 40, 10) {
-	speedX = sqrt(speed * speed / 2);
-	speedY = speedX;
+	speedX = 0;
+	speedY = speed;
 	color = COLOR::WHITE;
 	
 	shape->setFillColor(sf::Color(color));
@@ -93,6 +93,11 @@ bool Ball::handleBlockCollide(float blockX, float blockY, float blockWidth, floa
 void Ball::setColor(COLOR newColor) {
 	color = newColor;
 	shape->setFillColor(sf::Color(color));
+}
+
+void Ball::setSpeedAngle(float angle) {
+	speedX = speed * cos(angle);
+	speedY = speed * sin(angle);
 }
 
 COLOR Ball::getColor() {

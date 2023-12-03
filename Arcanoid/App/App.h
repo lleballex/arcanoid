@@ -6,7 +6,16 @@
 
 class App {
 private:
+	bool isRunning = false;
+
 	BaseScene* currentScene;
+	EventManager& eventManager = EventManager::getInstance();
+
+	void setHomeScene();
+	void setGameScene();
+	void setRulesScene();
+	void setAboutScene();
+	void quit();
 
 public:
 	App();

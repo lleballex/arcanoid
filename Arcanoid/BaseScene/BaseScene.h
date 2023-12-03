@@ -1,16 +1,15 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
-#include "../config.h"
+#include "../EventManager/EventManager.h"
 
 class BaseScene {
 protected:
-	SCENE nextScene = SCENE::NONE;
+	EventManager& eventManager = EventManager::getInstance();
 
 public:
-	virtual void handleEvent(sf::Event* event, sf::RenderWindow *window) {};
+	virtual ~BaseScene();
+
 	virtual void update(float dt) {};
 	virtual void draw(sf::RenderWindow *window) = 0;
-
-	SCENE getNextScene();
 };

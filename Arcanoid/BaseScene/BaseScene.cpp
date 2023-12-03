@@ -1,5 +1,5 @@
 #include "BaseScene.h"
 
-SCENE BaseScene::getNextScene() {
-	return nextScene;
+BaseScene::~BaseScene() {
+	eventManager.unsubscribe(this);
 }

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../Circle/Circle.h"
-#include "../colors.h"
+#include "../config.h"
 
 class Ball : public Circle {
 private:
@@ -17,6 +17,7 @@ public:
 	bool handleBlockCollide(float blockX, float blockY, float blockWidth, float blockHeight);
 
 	void setColor(COLOR newColor);
+	void setSpeedAngle(float angle);
 
 	COLOR getColor();
 };

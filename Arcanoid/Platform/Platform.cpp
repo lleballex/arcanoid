@@ -1,5 +1,5 @@
 #include "Platform.h"
-#include "../colors.h"
+#include "../config.h"
 
 Platform::Platform() : Rect(0, 0) {};
 

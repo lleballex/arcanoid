@@ -9,10 +9,11 @@ Home::Home() {
 	aboutBtn = new Button(btnWidth, btnHeight, "About");
 	quitBtn = new Button(btnWidth, btnHeight, "Quit");
 
-	startBtn->setOnClick(std::bind(&Home::setNextScene, this, SCENE::GAME));
-	rulesBtn->setOnClick(std::bind(&Home::setNextScene, this, SCENE::RULES));
-	aboutBtn->setOnClick(std::bind(&Home::setNextScene, this, SCENE::ABOUT));
-	quitBtn->setOnClick(std::bind(&Home::setNextScene, this, SCENE::QUIT));
+	eventManager.subscribe(EVENT::CLICK, startBtn, this, std::bind(&Home::setGameScene, this));
+	eventManager.subscribe(EVENT::CLICK, rulesBtn, this, std::bind(&Home::setRulesScene, this));
+	eventManager.subscribe(EVENT::CLICK, aboutBtn, this, std::bind(&Home::setAboutScene, this));
+	eventManager.subscribe(EVENT::CLICK, quitBtn, this, std::bind(&Home::quit, this));
+
 
 	layout = new VerticalLayout(5, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
 	layout->addObject(startBtn);
@@ -21,7 +22,7 @@ Home::Home() {
 	layout->addObject(quitBtn);
 }
 
-Home::~Home() {
+Home::~Home(){
 	delete startBtn;
 	delete rulesBtn;
 	delete aboutBtn;
@@ -29,15 +30,20 @@ Home::~Home() {
 	delete layout;
 }
 
-void Home::setNextScene(SCENE scene) {
-	nextScene = scene;
+void Home::setGameScene() {
+	eventManager.emit(EVENT::GO_GAME, this);
 }
 
-void Home::handleEvent(sf::Event* event, sf::RenderWindow* window) {
-	startBtn->handleEvent(event, window);
-	rulesBtn->handleEvent(event, window);
-	aboutBtn->handleEvent(event, window);
-	quitBtn->handleEvent(event, window);
+void Home::setRulesScene() {
+	eventManager.emit(EVENT::GO_RULES, this);
+}
+
+void Home::setAboutScene() {
+	eventManager.emit(EVENT::GO_ABOUT, this);
+}
+
+void Home::quit() {
+	eventManager.emit(EVENT::QUIT, this);
 }
 
 void Home::update(float dt) {

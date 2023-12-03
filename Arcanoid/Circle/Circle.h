@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../Object/Object.h"
-#include "../direction.h"
+#include "../config.h"
 
 class Circle : public Object {
 protected:

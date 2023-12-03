@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../Rect/Rect.h"
-#include "../colors.h"
+#include "../config.h"
 
 class Block : public Rect {
 protected:

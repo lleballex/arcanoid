@@ -84,6 +84,12 @@ Game::Game() {
 		}
 	}
 	
+	heartTexture = new sf::Texture;
+	heartTexture->loadFromFile("D:/Code/cpp/Arcanoid/out/build/x64-debug/Arcanoid/assets/heart.png");
+	heart = new sf::Sprite(*heartTexture);
+	heart->setScale(25 / 48.f, 25 / 48.f);
+
+	setInitBallPosition();
 }
 
 Game::~Game() {
@@ -98,11 +104,21 @@ Game::~Game() {
 	delete[] platforms;
 	
 	delete ball;
+
+	delete heart;
+	delete heartTexture;
+}
+
+void Game::setInitBallPosition() {
+	ball->setSpeedAngle(3.14 / 2);
+	ball->setPosition(platforms[1]->getX() + platforms[1]->getWidth() / 2 - ball->getWidth() / 2,
+					  platforms[1]->getY() - ball->getHeight() - 15);
 }
 
 void Game::update(float dt) {
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
-		nextScene = SCENE::HOME;
+		eventManager.emit(EVENT::GO_HOME, this);
+		return;
 	}
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
@@ -126,25 +142,38 @@ void Game::update(float dt) {
 		}
 	}
 
-	ball->update(dt);
+	if (isStarted) {
+		ball->update(dt);
 
-	for (int i = 0; i < platformsCount; i++) {
-		ball->handlePlatformCollide(platforms[i]->getX(), platforms[i]->getY(), platforms[i]->getWidth(), platforms[i]->getHeight());
-	}
+		for (int i = 0; i < platformsCount; i++) {
+			ball->handlePlatformCollide(platforms[i]->getX(), platforms[i]->getY(), platforms[i]->getWidth(), platforms[i]->getHeight());
+		}
 
-	for (int i = 0; i < blocksCount; i++) {
-		if (blocks[i]->isAlive()) {
-			if (ball->handleBlockCollide(blocks[i]->getX(), blocks[i]->getY(), blocks[i]->getWidth(), blocks[i]->getHeight())) {
-				blocks[i]->onBallCollide(ball->getColor());
-				if (blocks[i]->isSolid()) {
-					ball->setColor(blocks[i]->getColor());
+		for (int i = 0; i < blocksCount; i++) {
+			if (blocks[i]->isAlive()) {
+				if (ball->handleBlockCollide(blocks[i]->getX(), blocks[i]->getY(), blocks[i]->getWidth(), blocks[i]->getHeight())) {
+					blocks[i]->onBallCollide(ball->getColor());
+					if (blocks[i]->isSolid()) {
+						ball->setColor(blocks[i]->getColor());
+					}
 				}
 			}
 		}
-	}
 
-	if (!ball->isInsideWeakly(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)) {
-		ball->setPosition(100, 100);
+		if (!ball->isInsideWeakly(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)) {
+			isStarted = false;
+			if (--health <= 0) {
+				eventManager.emit(EVENT::GO_HOME, this);
+			}
+		}
+	}
+	else {
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
+			isStarted = true;
+		}
+		else {
+			setInitBallPosition();
+		}
 	}
 }
 
@@ -158,4 +187,9 @@ void Game::draw(sf::RenderWindow *window) {
 	}
 
 	ball->draw(window);
+
+	for (int i = 0; i < health; i++) {
+		heart->setPosition(i * 30, -3);
+		window->draw(*heart);
+	}
 }
