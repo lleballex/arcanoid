@@ -16,7 +16,7 @@ Ball::Ball() : Circle(10, 40, 10) {
 void Ball::update(float dt) {
 	x += speedX * dt;
 	y += speedY * dt;
-	onPositionChange();
+	setPosition(x, y);
 }
 
 void Ball::draw(sf::RenderWindow *window) {

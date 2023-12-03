@@ -11,13 +11,14 @@ protected:
 
 	void setRadius(float radius);
 
+private:
+	void onResize();
+	void onMove();
+
 public:
 	Circle(float radius);
 	Circle(float x, float y, float radius);
-	~Circle();
-
-	virtual void onSizeChange();
-	virtual void onPositionChange();
+	virtual ~Circle();
 
 	float* getRectCollision(float rectX, float rectY, float rectWidth, float rectHeight);
 	float getRadius();

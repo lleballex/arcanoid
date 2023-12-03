@@ -14,6 +14,10 @@ private:
 	sf::Font font;
 	sf::Text text;
 
+	void onRectChange();
+	void onHover();
+	void onUnhover();
+
 public:
 	Button(float x, float y, float width, float height, sf::String text);
 	Button(float width, float height, sf::String text);
@@ -21,10 +25,6 @@ public:
 
 	void update(float dt);
 	void draw(sf::RenderWindow* window);
-	void onPositionChange();
-	void onSizeChange();
-	void onHover();
-	void onUnhover();
 	
 	void setBg(COLOR bg, COLOR bgOnHover);
 };

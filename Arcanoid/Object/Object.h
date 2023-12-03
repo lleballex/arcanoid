@@ -15,18 +15,16 @@ protected:
 
 	EventManager& eventManager = EventManager::getInstance();
 
+private:
+	void handleSFMLEvent(sf::Event* event, sf::RenderWindow* window);
+
 public:
 	Object();
 	Object(float x, float y);
 	Object(float x, float y, float width, float height);
 	virtual ~Object();
 
-	void baseHandleSFMLEvent(sf::Event* event, sf::RenderWindow* window);
-
 	virtual void draw(sf::RenderWindow *window) = 0;
-
-	virtual void onSizeChange();
-	virtual void onPositionChange();
 
 	virtual bool contains(float x, float y);
 	virtual bool contains(float x, float y, float width, float height);

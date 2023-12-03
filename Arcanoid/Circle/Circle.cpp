@@ -4,22 +4,23 @@ Circle::Circle(float radius) : Circle(0, 0, radius) {};
 
 Circle::Circle(float x, float y, float radius) : Object(x, y, radius * 2, radius * 2), radius(radius) {
 	shape = new sf::CircleShape();
-	onSizeChange();
-	onPositionChange();
+	onResize();
+	onMove();
+
+	eventManager.subscribe(EVENT::RESIZE, this, this, std::bind(&Circle::onResize, this));
+	eventManager.subscribe(EVENT::MOVE, this, this, std::bind(&Circle::onMove, this));
 };
 
 Circle::~Circle() {
 	delete shape;
 }
 
-void Circle::onSizeChange() {
+void Circle::onResize() {
 	shape->setRadius(radius);
-	Object::onSizeChange();
 }
 
-void Circle::onPositionChange() {
+void Circle::onMove() {
 	shape->setPosition(x, y);
-	Object::onPositionChange();
 }
 
 float* Circle::getRectCollision(float rectX, float rectY, float rectWidth, float rectHeight) {
@@ -42,7 +43,7 @@ float* Circle::getRectCollision(float rectX, float rectY, float rectWidth, float
 
 void Circle::setRadius(float radius_) {
 	radius = radius_;
-	onSizeChange();
+	eventManager.emit(EVENT::RESIZE, this);
 }
 
 

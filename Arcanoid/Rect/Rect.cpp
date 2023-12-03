@@ -4,36 +4,37 @@ Rect::Rect(float width, float height) : Rect(0, 0, width, height) {};
 
 Rect::Rect(float x, float y, float width, float height) : Object(x, y, width, height) {
 	shape = new sf::RectangleShape();
-	onPositionChange();
-	onSizeChange();
+	onMove();
+	onResize();
+
+	eventManager.subscribe(EVENT::MOVE, this, this, std::bind(&Rect::onMove, this));
+	eventManager.subscribe(EVENT::RESIZE, this, this, std::bind(&Rect::onResize, this));
 };
 
 Rect::~Rect() {
 	delete shape;
 }
 
-void Rect::onSizeChange() {
+void Rect::onResize() {
 	shape->setSize(sf::Vector2f(width, height));
-	Object::onSizeChange();
 }
 
-void Rect::onPositionChange() {
+void Rect::onMove() {
 	shape->setPosition(x, y);
-	Object::onPositionChange();
 }
 
 void Rect::setSize(float width_, float height_) {
 	width = width_;
 	height = height_;
-	onSizeChange();
+	eventManager.emit(EVENT::RESIZE, this);
 }
 
 void Rect::setWidth(float width_) {
 	width = width_;
-	onSizeChange();
+	eventManager.emit(EVENT::RESIZE, this);
 }
 
 void Rect::setHeight(float height_) {
 	height = height_;
-	onSizeChange();
+	eventManager.emit(EVENT::RESIZE, this);
 }

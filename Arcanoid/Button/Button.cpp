@@ -13,6 +13,10 @@ Button::Button(float x, float y, float width, float height, sf::String text_) : 
 	sf::FloatRect textRect = text.getLocalBounds();
 	text.setOrigin(textRect.left + textRect.width / 2.0f, textRect.top + textRect.height / 2.0f);
 
+	onRectChange();
+
+	eventManager.subscribe(EVENT::MOVE, this, this, std::bind(&Button::onRectChange, this));
+	eventManager.subscribe(EVENT::RESIZE, this, this, std::bind(&Button::onRectChange, this));
 	eventManager.subscribe(EVENT::HOVER, this, this, std::bind(&Button::onHover, this));
 	eventManager.subscribe(EVENT::UNHOVER, this, this, std::bind(&Button::onUnhover, this));
 }
@@ -34,14 +38,8 @@ void Button::draw(sf::RenderWindow* window) {
 	window->draw(text);
 }
 
-void Button::onPositionChange() {
+void Button::onRectChange() {
 	text.setPosition(sf::Vector2f(x + width / 2.0f, y + height / 2.0f));
-	Rect::onPositionChange();
-}
-
-void Button::onSizeChange() {
-	text.setPosition(sf::Vector2f(x + width / 2.0f, y + height / 2.0f));
-	Rect::onSizeChange();
 }
 
 void Button::onHover() {

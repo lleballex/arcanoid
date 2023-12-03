@@ -10,11 +10,12 @@ protected:
 	void setWidth(float width);
 	void setHeight(float height);
 
+private:
+	void onResize();
+	void onMove();
+
 public:
 	Rect(float width, float height);
 	Rect(float x, float y, float width, float height);
-	virtual ~Rect();
-
-	virtual void onSizeChange();
-	virtual void onPositionChange();
+	virtual ~Rect();	
 };

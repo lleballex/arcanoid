@@ -14,7 +14,7 @@ void Platform::moveLeft(float dt, float minX) {
 		if (x < minX) {
 			x = minX;
 		}
-		onPositionChange();
+		setX(x);
 	}
 }
 
@@ -24,8 +24,8 @@ void Platform::moveRight(float dt, float maxX) {
 		if (x + width > maxX) {
 			x = maxX - width;
 		}
+		setX(x);
 	}
-	onPositionChange();
 }
 
 void Platform::moveUp(float dt, float minY) {
@@ -34,8 +34,8 @@ void Platform::moveUp(float dt, float minY) {
 		if (y < minY) {
 			y = minY;
 		}
+		setY(y);
 	}
-	onPositionChange();
 }
 
 void Platform::moveDown(float dt, float maxY) {
@@ -44,6 +44,6 @@ void Platform::moveDown(float dt, float maxY) {
 		if (y + height > maxY) {
 			y = maxY - height;
 		}
+		setY(y);
 	}
-	onPositionChange();
 }
