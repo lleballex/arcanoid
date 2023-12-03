@@ -6,5 +6,5 @@ class MultiBlock : public Block {
 public:
 	MultiBlock(float x, float y);
 
-	void onBallCollide(COLOR ballColor);
+	void onBallCollide(Ball *ball);
 };

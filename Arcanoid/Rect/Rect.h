@@ -13,7 +13,7 @@ protected:
 public:
 	Rect(float width, float height);
 	Rect(float x, float y, float width, float height);
-	~Rect();
+	virtual ~Rect();
 
 	virtual void onSizeChange();
 	virtual void onPositionChange();

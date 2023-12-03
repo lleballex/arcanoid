@@ -1,6 +1,6 @@
 #include "Block.h"
 
-Block::Block(float x, float y, COLOR color) : Rect(x, y, 80, 50), color(color) {
+Block::Block(float x, float y, COLOR color) : Rect(x, y, 75, 45), color(color) {
 	shape->setFillColor(sf::Color(color));
 };
 
@@ -10,8 +10,8 @@ void Block::draw(sf::RenderWindow *window) {
 	}
 }
 
-void Block::onBallCollide(COLOR ballColor) {
-	if (ballColor == color) {
+void Block::onBallCollide(Ball *ball) {
+	if (ball->getColor() == color) {
 		health -= 1;
 	}
 }

@@ -8,6 +8,7 @@
 
 class Game : public BaseScene {
 private:
+	// if ball is moving
 	bool isStarted = false;
 
 	int health = 5;

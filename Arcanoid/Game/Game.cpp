@@ -49,10 +49,10 @@ Game::Game() {
 		{COLOR::WHITE, COLOR::WHITE, COLOR::WHITE, COLOR::WHITE, COLOR::WHITE, COLOR::WHITE, COLOR::WHITE, COLOR::WHITE, COLOR::WHITE, COLOR::WHITE},
 		{COLOR::WHITE, COLOR::WHITE, COLOR::WHITE, COLOR::WHITE, COLOR::WHITE, COLOR::WHITE, COLOR::WHITE, COLOR::WHITE, COLOR::WHITE, COLOR::WHITE},
 		{COLOR::WHITE, COLOR::WHITE, COLOR::WHITE, COLOR::WHITE, COLOR::WHITE, COLOR::WHITE, COLOR::WHITE, COLOR::WHITE, COLOR::WHITE, COLOR::WHITE},
-		{COLOR::WHITE, COLOR::WHITE, COLOR::WHITE, COLOR::RED  , COLOR::RED  , COLOR::RED  , COLOR::RED  , COLOR::WHITE, COLOR::WHITE, COLOR::WHITE},
-		{COLOR::WHITE, COLOR::WHITE, COLOR::WHITE, COLOR::RED  , COLOR::WHITE, COLOR::WHITE, COLOR::RED  , COLOR::WHITE, COLOR::WHITE, COLOR::WHITE},
-		{COLOR::WHITE, COLOR::WHITE, COLOR::WHITE, COLOR::GREEN, COLOR::WHITE, COLOR::WHITE, COLOR::GREEN, COLOR::WHITE, COLOR::WHITE, COLOR::WHITE},
-		{COLOR::WHITE, COLOR::WHITE, COLOR::WHITE, COLOR::GREEN, COLOR::GREEN, COLOR::GREEN, COLOR::GREEN, COLOR::WHITE, COLOR::WHITE, COLOR::WHITE},
+		{COLOR::WHITE, COLOR::WHITE, COLOR::WHITE, COLOR::PINK,  COLOR::PINK,  COLOR::PINK,  COLOR::PINK,  COLOR::WHITE, COLOR::WHITE, COLOR::WHITE},
+		{COLOR::WHITE, COLOR::WHITE, COLOR::WHITE, COLOR::PINK,  COLOR::WHITE, COLOR::WHITE, COLOR::PINK,  COLOR::WHITE, COLOR::WHITE, COLOR::WHITE},
+		{COLOR::WHITE, COLOR::WHITE, COLOR::WHITE, COLOR::BLUE,  COLOR::WHITE, COLOR::WHITE, COLOR::BLUE , COLOR::WHITE, COLOR::WHITE, COLOR::WHITE},
+		{COLOR::WHITE, COLOR::WHITE, COLOR::WHITE, COLOR::BLUE , COLOR::BLUE , COLOR::BLUE , COLOR::BLUE , COLOR::WHITE, COLOR::WHITE, COLOR::WHITE},
 		{COLOR::WHITE, COLOR::WHITE, COLOR::WHITE, COLOR::WHITE, COLOR::WHITE, COLOR::WHITE, COLOR::WHITE, COLOR::WHITE, COLOR::WHITE, COLOR::WHITE},
 		{COLOR::WHITE, COLOR::WHITE, COLOR::WHITE, COLOR::WHITE, COLOR::WHITE, COLOR::WHITE, COLOR::WHITE, COLOR::WHITE, COLOR::WHITE, COLOR::WHITE},
 		{COLOR::WHITE, COLOR::WHITE, COLOR::WHITE, COLOR::WHITE, COLOR::WHITE, COLOR::WHITE, COLOR::WHITE, COLOR::WHITE, COLOR::WHITE, COLOR::WHITE},
@@ -85,7 +85,7 @@ Game::Game() {
 	}
 	
 	heartTexture = new sf::Texture;
-	heartTexture->loadFromFile("D:/Code/cpp/Arcanoid/out/build/x64-debug/Arcanoid/assets/heart.png");
+	heartTexture->loadFromFile("./assets/heart.png");
 	heart = new sf::Sprite(*heartTexture);
 	heart->setScale(25 / 48.f, 25 / 48.f);
 
@@ -110,7 +110,7 @@ Game::~Game() {
 }
 
 void Game::setInitBallPosition() {
-	ball->setSpeedAngle(3.14 / 2);
+	ball->setSpeedAngle(-3.14 / 2);
 	ball->setPosition(platforms[1]->getX() + platforms[1]->getWidth() / 2 - ball->getWidth() / 2,
 					  platforms[1]->getY() - ball->getHeight() - 15);
 }
@@ -145,6 +145,8 @@ void Game::update(float dt) {
 	if (isStarted) {
 		ball->update(dt);
 
+		// TODO: improve objects interaction
+
 		for (int i = 0; i < platformsCount; i++) {
 			ball->handlePlatformCollide(platforms[i]->getX(), platforms[i]->getY(), platforms[i]->getWidth(), platforms[i]->getHeight());
 		}
@@ -152,7 +154,7 @@ void Game::update(float dt) {
 		for (int i = 0; i < blocksCount; i++) {
 			if (blocks[i]->isAlive()) {
 				if (ball->handleBlockCollide(blocks[i]->getX(), blocks[i]->getY(), blocks[i]->getWidth(), blocks[i]->getHeight())) {
-					blocks[i]->onBallCollide(ball->getColor());
+					blocks[i]->onBallCollide(ball);
 					if (blocks[i]->isSolid()) {
 						ball->setColor(blocks[i]->getColor());
 					}
@@ -163,15 +165,25 @@ void Game::update(float dt) {
 		if (!ball->isInsideWeakly(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)) {
 			isStarted = false;
 			if (--health <= 0) {
+				// TODO: add kinda plug
 				eventManager.emit(EVENT::GO_HOME, this);
 			}
 		}
+
+		//for (int i = 0; i < blocksCount; i++) {
+		//	if (!blocks[i]->isAlive() || blocks[i]->isSolid()) {
+		//		// TODO: add kinda plug
+		//		eventManager.emit(EVENT::GO_HOME, this);
+		//	}
+		//}
 	}
 	else {
+		// TODO: maybe use event manager. and for escape press as well
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
 			isStarted = true;
 		}
 		else {
+			// TODO: bad - call every update
 			setInitBallPosition();
 		}
 	}

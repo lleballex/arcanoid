@@ -70,7 +70,7 @@ void App::run() {
 			currentScene->update(dt);
 		}
 
-		window.clear(sf::Color(COLOR::BACKGROUND));
+		window.clear(sf::Color(COLOR::BLACK));
 		
 		if (currentScene) {
 			currentScene->draw(&window);

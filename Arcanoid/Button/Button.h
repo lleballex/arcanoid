@@ -7,7 +7,7 @@
 class Button : public Rect {
 private:
 	COLOR bg = COLOR::PURPLE;
-	COLOR bgOnHover = COLOR::PURPLE_HOVER;
+	COLOR bgOnHover = COLOR::PURPLE_2;
 
 	ColorTransition *bgTransition = nullptr;	
 

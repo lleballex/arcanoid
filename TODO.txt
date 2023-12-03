@@ -1,0 +1,15 @@
+- improve object interactions (in game scene)
+- add scale transition or kind of general size transition. use it for buttons, maybe for paltforms when game is not started
+- add rules scene
+- add about scene
+- add pause to the game
+- add plug after game end
+- add condition of game winning
+- add some specific stuff to solid block
+- check other components
+- change cursor when button is hovered
+- add ability to select active platoform for ball (when game is not started)
+- push boll to the center (to blocks)
+- improve ball collisions
+- add levels
+- remove console
