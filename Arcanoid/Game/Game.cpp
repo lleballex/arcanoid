@@ -16,8 +16,7 @@ Game::Game() {
 	blocks[blocksCount - 2] = new SolidBlock(10, 300, COLOR::WHITE);*/
 
 
-	platformsCount = 4;
-	platforms = new Platform*[platformsCount];
+	platforms = new Platform*[4];
 
 	platforms[0] = new HorizontalPlatform;
 	platforms[0]->setPosition((SCREEN_WIDTH - platforms[0]->getWidth()) / 2, 0);
@@ -27,6 +26,12 @@ Game::Game() {
 	platforms[2]->setPosition(0, (SCREEN_HEIGHT - platforms[2]->getHeight()) / 2);
 	platforms[3] = new VerticalPlatform;
 	platforms[3]->setPosition(SCREEN_WIDTH - platforms[3]->getWidth(), (SCREEN_HEIGHT - platforms[3]->getHeight()) / 2);
+
+	for (int i = 0; i < 4; i++) {
+		eventManager.subscribe(EVENT::CLICK, platforms[i], this, std::bind(&Game::setActivePlatformIdx, this, i));
+		eventManager.subscribe(EVENT::MOVE, platforms[i], this, std::bind(&Game::setInitBallPosition, this));
+		eventManager.subscribe(EVENT::RESIZE, platforms[i], this, std::bind(&Game::setInitBallPosition, this));
+	}
 
 	ball = new Ball;
 
@@ -90,6 +95,8 @@ Game::Game() {
 	heart->setScale(25 / 48.f, 25 / 48.f);
 
 	setInitBallPosition();
+
+	eventManager.subscribeSFML(this, std::bind(&Game::handleSFMLEvent, this, std::placeholders::_1, std::placeholders::_2));
 }
 
 Game::~Game() {
@@ -98,7 +105,7 @@ Game::~Game() {
 	}
 	delete[] blocks;
 
-	for (int i = 0; i < platformsCount; i++) {
+	for (int i = 0; i < 4; i++) {
 		delete[] platforms[i];
 	}
 	delete[] platforms;
@@ -110,34 +117,67 @@ Game::~Game() {
 }
 
 void Game::setInitBallPosition() {
-	ball->setSpeedAngle(-3.14 / 2);
-	ball->setPosition(platforms[1]->getX() + platforms[1]->getWidth() / 2 - ball->getWidth() / 2,
-					  platforms[1]->getY() - ball->getHeight() - 15);
+	if (isStarted) return;
+
+	switch (activePlatformIdx) {
+	case 0:
+		ball->setSpeedAngle(3.14 / 2);
+		ball->setPosition(platforms[0]->getX() + platforms[0]->getWidth() / 2 - ball->getWidth() / 2,
+						  platforms[0]->getY() + platforms[0]->getHeight() + 15);
+		break;
+	case 1:
+		ball->setSpeedAngle(-3.14 / 2);
+		ball->setPosition(platforms[1]->getX() + platforms[1]->getWidth() / 2 - ball->getWidth() / 2,
+						  platforms[1]->getY() - ball->getHeight() - 15);
+		break;
+	case 2:
+		ball->setSpeedAngle(0);
+		ball->setPosition(platforms[2]->getX() + platforms[2]->getWidth() + 15,
+						  platforms[2]->getY() + platforms[2]->getHeight() / 2 - ball->getHeight() / 2);
+		break;
+	case 3:
+		ball->setSpeedAngle(3.14);
+		ball->setPosition(platforms[3]->getX() - ball->getWidth() - 15,
+						  platforms[3]->getY() + platforms[3]->getHeight() / 2 - ball->getHeight() / 2);
+		break;
+	}
+	
+}
+
+void Game::setActivePlatformIdx(int idx) {
+	activePlatformIdx = idx;
+	setInitBallPosition();
+}
+
+void Game::handleSFMLEvent(sf::Event* event, sf::RenderWindow* window) {
+	if (event->type == sf::Event::KeyPressed) {
+		if (event->key.code == sf::Keyboard::Space && !isStarted) {
+			isStarted = true;
+		}
+		else if (event->key.code == sf::Keyboard::Escape) {
+			eventManager.emit(EVENT::GO_HOME, this);
+		}
+	}
 }
 
 void Game::update(float dt) {
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
-		eventManager.emit(EVENT::GO_HOME, this);
-		return;
-	}
-
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
-		for (int i = 0; i < platformsCount; i++) {
+		for (int i = 0; i < 4; i++) {
 			platforms[i]->moveLeft(dt, platforms[i]->getHeight());
 		}
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
-		for (int i = 0; i < platformsCount; i++) {
+		for (int i = 0; i < 4; i++) {
 			platforms[i]->moveRight(dt, SCREEN_WIDTH - platforms[i]->getHeight());
 		}
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
-		for (int i = 0; i < platformsCount; i++) {
+		for (int i = 0; i < 4; i++) {
 			platforms[i]->moveUp(dt, platforms[i]->getWidth());
 		}
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
-		for (int i = 0; i < platformsCount; i++) {
+		for (int i = 0; i < 4; i++) {
 			platforms[i]->moveDown(dt, SCREEN_HEIGHT - platforms[i]->getWidth());
 		}
 	}
@@ -145,16 +185,14 @@ void Game::update(float dt) {
 	if (isStarted) {
 		ball->update(dt);
 
-		// TODO: improve objects interaction
-
-		for (int i = 0; i < platformsCount; i++) {
+		for (int i = 0; i < 4; i++) {
 			ball->handlePlatformCollide(platforms[i]->getX(), platforms[i]->getY(), platforms[i]->getWidth(), platforms[i]->getHeight());
 		}
 
 		for (int i = 0; i < blocksCount; i++) {
 			if (blocks[i]->isAlive()) {
 				if (ball->handleBlockCollide(blocks[i]->getX(), blocks[i]->getY(), blocks[i]->getWidth(), blocks[i]->getHeight())) {
-					blocks[i]->onBallCollide(ball);
+					blocks[i]->onBallCollide(ball->getColor());
 					if (blocks[i]->isSolid()) {
 						ball->setColor(blocks[i]->getColor());
 					}
@@ -163,29 +201,29 @@ void Game::update(float dt) {
 		}
 
 		if (!ball->isInsideWeakly(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)) {
-			isStarted = false;
 			if (--health <= 0) {
 				// TODO: add kinda plug
 				eventManager.emit(EVENT::GO_HOME, this);
+				return;
+			}
+			else {
+				isStarted = false;
+				setInitBallPosition();
 			}
 		}
 
-		//for (int i = 0; i < blocksCount; i++) {
+		//bool isEnd = true;
+		//for (int i = 0; i < blocksCount && isEnd; i++) {
 		//	if (!blocks[i]->isAlive() || blocks[i]->isSolid()) {
-		//		// TODO: add kinda plug
-		//		eventManager.emit(EVENT::GO_HOME, this);
+		//		isEnd = false;
+		//		
 		//	}
 		//}
-	}
-	else {
-		// TODO: maybe use event manager. and for escape press as well
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
-			isStarted = true;
-		}
-		else {
-			// TODO: bad - call every update
-			setInitBallPosition();
-		}
+		//if (isEnd) {
+		//	// TODO: add kinda plug
+		//	eventManager.emit(EVENT::GO_HOME, this);
+		//	return;
+		//}
 	}
 }
 
@@ -194,7 +232,7 @@ void Game::draw(sf::RenderWindow *window) {
 		blocks[i]->draw(window);
 	}
 
-	for (int i = 0; i < platformsCount; i++) {
+	for (int i = 0; i < 4; i++) {
 		platforms[i]->draw(window);
 	}
 

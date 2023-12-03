@@ -10,8 +10,8 @@ void Block::draw(sf::RenderWindow *window) {
 	}
 }
 
-void Block::onBallCollide(Ball *ball) {
-	if (ball->getColor() == color) {
+void Block::onBallCollide(COLOR ballColor) {
+	if (ballColor == color) {
 		health -= 1;
 	}
 }

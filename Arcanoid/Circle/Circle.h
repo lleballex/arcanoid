@@ -16,7 +16,7 @@ public:
 	Circle(float x, float y, float radius);
 	~Circle();
 
-	virtual void onResize();
+	virtual void onSizeChange();
 	virtual void onPositionChange();
 
 	float* getRectCollision(float rectX, float rectY, float rectWidth, float rectHeight);

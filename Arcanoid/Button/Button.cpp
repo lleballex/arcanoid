@@ -35,13 +35,13 @@ void Button::draw(sf::RenderWindow* window) {
 }
 
 void Button::onPositionChange() {
-	shape->setPosition(x, y);
 	text.setPosition(sf::Vector2f(x + width / 2.0f, y + height / 2.0f));
+	Rect::onPositionChange();
 }
 
 void Button::onSizeChange() {
-	shape->setSize(sf::Vector2f(width, height));
 	text.setPosition(sf::Vector2f(x + width / 2.0f, y + height / 2.0f));
+	Rect::onSizeChange();
 }
 
 void Button::onHover() {

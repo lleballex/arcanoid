@@ -4,7 +4,7 @@ Circle::Circle(float radius) : Circle(0, 0, radius) {};
 
 Circle::Circle(float x, float y, float radius) : Object(x, y, radius * 2, radius * 2), radius(radius) {
 	shape = new sf::CircleShape();
-	onResize();
+	onSizeChange();
 	onPositionChange();
 };
 
@@ -12,12 +12,14 @@ Circle::~Circle() {
 	delete shape;
 }
 
-void Circle::onResize() {
+void Circle::onSizeChange() {
 	shape->setRadius(radius);
+	Object::onSizeChange();
 }
 
 void Circle::onPositionChange() {
 	shape->setPosition(x, y);
+	Object::onPositionChange();
 }
 
 float* Circle::getRectCollision(float rectX, float rectY, float rectWidth, float rectHeight) {

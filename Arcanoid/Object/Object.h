@@ -25,8 +25,8 @@ public:
 
 	virtual void draw(sf::RenderWindow *window) = 0;
 
-	virtual void onSizeChange() {};
-	virtual void onPositionChange() {};
+	virtual void onSizeChange();
+	virtual void onPositionChange();
 
 	virtual bool contains(float x, float y);
 	virtual bool contains(float x, float y, float width, float height);

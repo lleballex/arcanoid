@@ -29,7 +29,6 @@ bool Ball::handlePlatformCollide(float plX, float plY, float plWidth, float plHe
 	//float newAngle = float(rand()) / RAND_MAX * M_PI / 1 - M_PI / 2;
 
 	if (!res) {
-		delete[] res;
 		return false;
 	}
 
@@ -70,7 +69,6 @@ bool Ball::handleBlockCollide(float blockX, float blockY, float blockWidth, floa
 	float *res = getRectCollision(blockX, blockY, blockWidth, blockHeight);
 
 	if (!res) {
-		delete[] res;
 		return false;
 	}
 	

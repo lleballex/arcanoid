@@ -31,6 +31,14 @@ void Object::baseHandleSFMLEvent(sf::Event* event, sf::RenderWindow* window) {
 	}
 }
 
+void Object::onPositionChange() {
+	eventManager.emit(EVENT::MOVE, this);
+}
+
+void Object::onSizeChange() {
+	eventManager.emit(EVENT::RESIZE, this);
+}
+
 bool Object::contains(float x_, float y_) {
 	return x_ >= x && x_ <= x + width && y_ >= y && y_ <= y + height;
 }

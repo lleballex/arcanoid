@@ -1,7 +1,6 @@
 #pragma once
 
 #include "../Rect/Rect.h"
-#include "../Ball/Ball.h"
 #include "../config.h"
 
 class Block : public Rect {
@@ -14,7 +13,7 @@ public:
 	Block(float x, float y, COLOR color);
 
 	void draw(sf::RenderWindow *window);
-	virtual void onBallCollide(Ball *ball);
+	virtual void onBallCollide(COLOR ballColor);
 
 	virtual bool isAlive();
 	virtual bool isSolid();

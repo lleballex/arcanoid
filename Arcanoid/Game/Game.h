@@ -11,9 +11,10 @@ private:
 	// if ball is moving
 	bool isStarted = false;
 
+	int activePlatformIdx = 1;
+
 	int health = 5;
 	int blocksCount = 0;
-	int platformsCount = 0;
 
 	Block** blocks;
 	Platform** platforms;
@@ -23,6 +24,8 @@ private:
 	sf::Sprite *heart;
 
 	void setInitBallPosition();
+	void setActivePlatformIdx(int idx);
+	void handleSFMLEvent(sf::Event *event, sf::RenderWindow *window);
 
 public:
 	Game();

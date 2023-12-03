@@ -12,7 +12,9 @@ enum EVENT
 	GO_ABOUT = 4,
 	CLICK = 5,
 	HOVER = 6,
-	UNHOVER = 7
+	UNHOVER = 7,
+	MOVE = 8,
+	RESIZE = 9,
 };
 
 enum COLOR

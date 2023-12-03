@@ -14,10 +14,12 @@ Rect::~Rect() {
 
 void Rect::onSizeChange() {
 	shape->setSize(sf::Vector2f(width, height));
+	Object::onSizeChange();
 }
 
 void Rect::onPositionChange() {
 	shape->setPosition(x, y);
+	Object::onPositionChange();
 }
 
 void Rect::setSize(float width_, float height_) {
