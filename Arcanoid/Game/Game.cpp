@@ -5,17 +5,6 @@
 #include "../HorizontalPlatform/HorizontalPlatform.h"
 
 Game::Game() {
-	/*blocksCount = 7;
-	blocks = new Block*[blocksCount];
-
-	for (int i = 0; i < blocksCount - 2; i++) {
-		blocks[i] = new Block(100 + i * 50, 100 + i * 50);
-	}
-
-	blocks[blocksCount - 1] = new SolidBlock(300, 50, COLOR::RED);
-	blocks[blocksCount - 2] = new SolidBlock(10, 300, COLOR::WHITE);*/
-
-
 	platforms = new Platform*[4];
 
 	platforms[0] = new HorizontalPlatform;
@@ -34,6 +23,14 @@ Game::Game() {
 	}
 
 	ball = new Ball;
+	setInitBallPosition();
+
+	heartTexture = new sf::Texture;
+	heartTexture->loadFromFile("./assets/heart.png");
+	heart = new sf::Sprite(*heartTexture);
+	heart->setScale(25 / 48.f, 25 / 48.f);
+
+	eventManager.subscribeSFML(this, std::bind(&Game::handleSFMLEvent, this, std::placeholders::_1, std::placeholders::_2));
 
 	// level loading
 
@@ -49,6 +46,7 @@ Game::Game() {
 		{0, 0, 0, 0, 3, 3, 0, 0, 0, 0},
 		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
 		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+
 	};
 	COLOR cellColors[cellsCount][cellsCount] = {
 		{COLOR::WHITE, COLOR::WHITE, COLOR::WHITE, COLOR::WHITE, COLOR::WHITE, COLOR::WHITE, COLOR::WHITE, COLOR::WHITE, COLOR::WHITE, COLOR::WHITE},
@@ -89,14 +87,7 @@ Game::Game() {
 		}
 	}
 	
-	heartTexture = new sf::Texture;
-	heartTexture->loadFromFile("./assets/heart.png");
-	heart = new sf::Sprite(*heartTexture);
-	heart->setScale(25 / 48.f, 25 / 48.f);
-
-	setInitBallPosition();
-
-	eventManager.subscribeSFML(this, std::bind(&Game::handleSFMLEvent, this, std::placeholders::_1, std::placeholders::_2));
+	
 }
 
 Game::~Game() {
@@ -189,6 +180,8 @@ void Game::update(float dt) {
 			ball->handlePlatformCollide(platforms[i]->getX(), platforms[i]->getY(), platforms[i]->getWidth(), platforms[i]->getHeight());
 		}
 
+		bool hasWon = true;
+
 		for (int i = 0; i < blocksCount; i++) {
 			if (blocks[i]->isAlive()) {
 				if (ball->handleBlockCollide(blocks[i]->getX(), blocks[i]->getY(), blocks[i]->getWidth(), blocks[i]->getHeight())) {
@@ -197,33 +190,27 @@ void Game::update(float dt) {
 						ball->setColor(blocks[i]->getColor());
 					}
 				}
+
+				if (!blocks[i]->isSolid() && hasWon) {
+					hasWon = false;
+				}
 			}
+		}
+
+		if (hasWon) {
+			return eventManager.emit(EVENT::GO_HOME, this);
 		}
 
 		if (!ball->isInsideWeakly(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)) {
 			if (--health <= 0) {
 				// TODO: add kinda plug
-				eventManager.emit(EVENT::GO_HOME, this);
-				return;
+				return eventManager.emit(EVENT::GO_HOME, this);
 			}
 			else {
 				isStarted = false;
 				setInitBallPosition();
 			}
 		}
-
-		//bool isEnd = true;
-		//for (int i = 0; i < blocksCount && isEnd; i++) {
-		//	if (!blocks[i]->isAlive() || blocks[i]->isSolid()) {
-		//		isEnd = false;
-		//		
-		//	}
-		//}
-		//if (isEnd) {
-		//	// TODO: add kinda plug
-		//	eventManager.emit(EVENT::GO_HOME, this);
-		//	return;
-		//}
 	}
 }
 
