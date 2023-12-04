@@ -47,7 +47,7 @@ void App::run() {
 
 	sf::RenderWindow window(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT), "ARCANOID by lleballex");
 
-	window.setFramerateLimit(60);
+	window.setFramerateLimit(100);
 
 	sf::Clock clock;
 

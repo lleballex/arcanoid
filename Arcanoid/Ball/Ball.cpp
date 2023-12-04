@@ -25,12 +25,25 @@ void Ball::draw(sf::RenderWindow *window) {
 
 bool Ball::handlePlatformCollide(float plX, float plY, float plWidth, float plHeight) {
 	float *res = getRectCollision(plX, plY, plWidth, plHeight);
-	float newAngle = float(rand()) / RAND_MAX * M_PI / 2 - M_PI / 4;	
-	//float newAngle = float(rand()) / RAND_MAX * M_PI / 1 - M_PI / 2;
 
 	if (!res) {
 		return false;
 	}
+
+	if ((float)rand() / RAND_MAX >= 0.3) {
+		float offsetX = (float)rand() / RAND_MAX * 400 - 200;
+		float offsetY = (float)rand() / RAND_MAX * 400 - 200;
+		float directionX = centerX - x + offsetX;
+		float directionY = centerY - y + offsetY;
+		float distance = sqrt(directionX * directionX + directionY * directionY);
+
+		speedX = (directionX / distance) * speed;
+		speedY = (directionY / distance) * speed;
+
+		return true;
+	}
+
+	float newAngle = float(rand()) / RAND_MAX * M_PI * 2 - M_PI;
 
 	if (abs(res[1]) > abs(res[0])) {
 		if (res[1] > 0) {
@@ -96,6 +109,11 @@ void Ball::setColor(COLOR newColor) {
 void Ball::setSpeedAngle(float angle) {
 	speedX = speed * cos(angle);
 	speedY = speed * sin(angle);
+}
+
+void Ball::setCenterPosition(float x, float y) {
+	centerX = x;
+	centerY = y;
 }
 
 COLOR Ball::getColor() {

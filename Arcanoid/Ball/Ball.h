@@ -6,7 +6,9 @@
 class Ball : public Circle {
 private:
 	COLOR color;
+
 	float speed = 0.4;
+	float centerX = 10, centerY = 10;
 
 public:
 	Ball();
@@ -18,6 +20,7 @@ public:
 
 	void setColor(COLOR newColor);
 	void setSpeedAngle(float angle);
+	void setCenterPosition(float x, float y);
 
 	COLOR getColor();
 };

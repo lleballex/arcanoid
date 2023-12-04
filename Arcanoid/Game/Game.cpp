@@ -26,6 +26,7 @@ Game::Game() {
 	}
 
 	ball = new Ball;
+	ball->setCenterPosition(SCREEN_WIDTH / 2.f, SCREEN_HEIGHT / 2.f);
 	setInitBallPosition();
 
 	heartTexture = new sf::Texture;

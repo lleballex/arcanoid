@@ -14,7 +14,6 @@ Home::Home() {
 	eventManager.subscribe(EVENT::CLICK, aboutBtn, &Home::setAboutScene, this);
 	eventManager.subscribe(EVENT::CLICK, quitBtn, &Home::quit, this);
 
-
 	layout = new VerticalLayout(5, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
 	layout->addObject(startBtn);
 	layout->addObject(rulesBtn);
