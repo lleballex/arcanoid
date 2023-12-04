@@ -7,11 +7,11 @@ App::App() {
 	
 	srand(time(NULL));
 
-	eventManager.subscribe(EVENT::GO_HOME, nullptr, this, std::bind(&App::setHomeScene, this));
-	eventManager.subscribe(EVENT::GO_GAME, nullptr, this, std::bind(&App::setGameScene, this));
-	eventManager.subscribe(EVENT::GO_RULES, nullptr, this, std::bind(&App::setRulesScene, this));
-	eventManager.subscribe(EVENT::GO_ABOUT, nullptr, this, std::bind(&App::setAboutScene, this));
-	eventManager.subscribe(EVENT::QUIT, nullptr, this, std::bind(&App::quit, this));
+	eventManager.subscribe(EVENT::GO_HOME, nullptr, &App::setHomeScene, this);
+	eventManager.subscribe(EVENT::GO_GAME, nullptr, &App::setGameScene, this);
+	eventManager.subscribe(EVENT::GO_RULES, nullptr, &App::setRulesScene, this);
+	eventManager.subscribe(EVENT::GO_ABOUT, nullptr, &App::setAboutScene, this);
+	eventManager.subscribe(EVENT::QUIT, nullptr, &App::quit, this);
 }	
 
 App::~App() {

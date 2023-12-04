@@ -9,17 +9,20 @@ Game::Game() {
 
 	platforms[0] = new HorizontalPlatform;
 	platforms[0]->setPosition((SCREEN_WIDTH - platforms[0]->getWidth()) / 2, 0);
+	eventManager.subscribe(EVENT::CLICK, platforms[0], &Game::setActivePlatform0, this);
 	platforms[1] = new HorizontalPlatform;
 	platforms[1]->setPosition((SCREEN_WIDTH - platforms[1]->getWidth()) / 2, SCREEN_HEIGHT - platforms[1]->getHeight());
+	eventManager.subscribe(EVENT::CLICK, platforms[1], &Game::setActivePlatform1, this);
 	platforms[2] = new VerticalPlatform;
 	platforms[2]->setPosition(0, (SCREEN_HEIGHT - platforms[2]->getHeight()) / 2);
+	eventManager.subscribe(EVENT::CLICK, platforms[2], &Game::setActivePlatform2, this);
 	platforms[3] = new VerticalPlatform;
 	platforms[3]->setPosition(SCREEN_WIDTH - platforms[3]->getWidth(), (SCREEN_HEIGHT - platforms[3]->getHeight()) / 2);
+	eventManager.subscribe(EVENT::CLICK, platforms[3], &Game::setActivePlatform3, this);
 
 	for (int i = 0; i < 4; i++) {
-		eventManager.subscribe(EVENT::CLICK, platforms[i], this, std::bind(&Game::setActivePlatformIdx, this, i));
-		eventManager.subscribe(EVENT::MOVE, platforms[i], this, std::bind(&Game::setInitBallPosition, this));
-		eventManager.subscribe(EVENT::RESIZE, platforms[i], this, std::bind(&Game::setInitBallPosition, this));
+		eventManager.subscribe(EVENT::MOVE, platforms[i], &Game::setInitBallPosition, this);
+		eventManager.subscribe(EVENT::RESIZE, platforms[i], &Game::setInitBallPosition, this);
 	}
 
 	ball = new Ball;
@@ -30,7 +33,7 @@ Game::Game() {
 	heart = new sf::Sprite(*heartTexture);
 	heart->setScale(25 / 48.f, 25 / 48.f);
 
-	eventManager.subscribeSFML(this, std::bind(&Game::handleSFMLEvent, this, std::placeholders::_1, std::placeholders::_2));
+	eventManager.subscribeSFML(&Game::handleSFMLEvent, this);
 
 	// level loading
 
@@ -135,8 +138,23 @@ void Game::setInitBallPosition() {
 	
 }
 
-void Game::setActivePlatformIdx(int idx) {
-	activePlatformIdx = idx;
+void Game::setActivePlatform0() {
+	activePlatformIdx = 0;
+	setInitBallPosition();
+}
+
+void Game::setActivePlatform1() {
+	activePlatformIdx = 1;
+	setInitBallPosition();
+}
+
+void Game::setActivePlatform2() {
+	activePlatformIdx = 2;
+	setInitBallPosition();
+}
+
+void Game::setActivePlatform3() {
+	activePlatformIdx = 3;
 	setInitBallPosition();
 }
 

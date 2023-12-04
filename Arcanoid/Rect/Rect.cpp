@@ -7,8 +7,8 @@ Rect::Rect(float x, float y, float width, float height) : Object(x, y, width, he
 	onMove();
 	onResize();
 
-	eventManager.subscribe(EVENT::MOVE, this, this, std::bind(&Rect::onMove, this));
-	eventManager.subscribe(EVENT::RESIZE, this, this, std::bind(&Rect::onResize, this));
+	eventManager.subscribe(EVENT::MOVE, this, &Rect::onMove, this);
+	eventManager.subscribe(EVENT::RESIZE, this, &Rect::onResize, this);
 };
 
 Rect::~Rect() {

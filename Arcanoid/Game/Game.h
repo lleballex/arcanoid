@@ -24,7 +24,10 @@ private:
 	sf::Sprite *heart;
 
 	void setInitBallPosition();
-	void setActivePlatformIdx(int idx);
+	void setActivePlatform0();
+	void setActivePlatform1();
+	void setActivePlatform2();
+	void setActivePlatform3();
 	void handleSFMLEvent(sf::Event *event, sf::RenderWindow *window);
 
 public:

@@ -15,10 +15,10 @@ Button::Button(float x, float y, float width, float height, sf::String text_) : 
 
 	onRectChange();
 
-	eventManager.subscribe(EVENT::MOVE, this, this, std::bind(&Button::onRectChange, this));
-	eventManager.subscribe(EVENT::RESIZE, this, this, std::bind(&Button::onRectChange, this));
-	eventManager.subscribe(EVENT::HOVER, this, this, std::bind(&Button::onHover, this));
-	eventManager.subscribe(EVENT::UNHOVER, this, this, std::bind(&Button::onUnhover, this));
+	eventManager.subscribe(EVENT::MOVE, this, &Button::onRectChange, this);
+	eventManager.subscribe(EVENT::RESIZE, this, &Button::onRectChange, this);
+	eventManager.subscribe(EVENT::HOVER, this, &Button::onHover, this);
+	eventManager.subscribe(EVENT::UNHOVER, this, &Button::onUnhover, this);
 }
 
 Button::Button(float width, float height, sf::String text) : Button(0, 0, width, height, text) {}

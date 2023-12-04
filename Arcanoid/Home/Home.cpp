@@ -9,10 +9,10 @@ Home::Home() {
 	aboutBtn = new Button(btnWidth, btnHeight, "About");
 	quitBtn = new Button(btnWidth, btnHeight, "Quit");
 
-	eventManager.subscribe(EVENT::CLICK, startBtn, this, std::bind(&Home::setGameScene, this));
-	eventManager.subscribe(EVENT::CLICK, rulesBtn, this, std::bind(&Home::setRulesScene, this));
-	eventManager.subscribe(EVENT::CLICK, aboutBtn, this, std::bind(&Home::setAboutScene, this));
-	eventManager.subscribe(EVENT::CLICK, quitBtn, this, std::bind(&Home::quit, this));
+	eventManager.subscribe(EVENT::CLICK, startBtn, &Home::setGameScene, this);
+	eventManager.subscribe(EVENT::CLICK, rulesBtn, &Home::setRulesScene, this);
+	eventManager.subscribe(EVENT::CLICK, aboutBtn, &Home::setAboutScene, this);
+	eventManager.subscribe(EVENT::CLICK, quitBtn, &Home::quit, this);
 
 
 	layout = new VerticalLayout(5, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);

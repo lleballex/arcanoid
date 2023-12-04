@@ -7,8 +7,8 @@ Circle::Circle(float x, float y, float radius) : Object(x, y, radius * 2, radius
 	onResize();
 	onMove();
 
-	eventManager.subscribe(EVENT::RESIZE, this, this, std::bind(&Circle::onResize, this));
-	eventManager.subscribe(EVENT::MOVE, this, this, std::bind(&Circle::onMove, this));
+	eventManager.subscribe(EVENT::RESIZE, this, &Circle::onResize, this);
+	eventManager.subscribe(EVENT::MOVE, this, &Circle::onMove, this);
 };
 
 Circle::~Circle() {

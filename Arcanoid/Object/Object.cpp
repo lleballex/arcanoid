@@ -5,7 +5,7 @@ Object::Object() : Object(0, 0) {};
 Object::Object(float x, float y) : Object(x, y, 0, 0) {};
 
 Object::Object(float x, float y, float width, float height): x(x), y(y), width(width), height(height) {
-	eventManager.subscribeSFML(this, std::bind(&Object::handleSFMLEvent, this, std::placeholders::_1, std::placeholders::_2));
+	eventManager.subscribeSFML(&Object::handleSFMLEvent, this);
 }
 
 Object::~Object() {

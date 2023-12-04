@@ -30,22 +30,6 @@ void EventManager::emitSFML(sf::Event *event, sf::RenderWindow *window) {
 	}
 }
 
-void EventManager::subscribe(EVENT event, void* sender, void* reciever, std::function<void()> callback) {
-	EventHandler handler;
-	handler.event = event;
-	handler.sender = sender;
-	handler.reciever = reciever;
-	handler.callback = callback;
-	handlers[handlersCount++] = handler;
-}
-
-void EventManager::subscribeSFML(void* reciever, std::function <void(sf::Event*, sf::RenderWindow*)> callback) {
-	SFMLEventHandler handler;
-	handler.reciever = reciever;
-	handler.callback = callback;
-	sfmlHandlers[sfmlHandlersCount++] = handler;
-}
-
 void EventManager::unsubscribe(void* reciever) {
 	for (int i = 0; i < sfmlHandlersCount; i++) {
 		if (sfmlHandlers[i].reciever == reciever) {
