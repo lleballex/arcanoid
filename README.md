@@ -1,6 +1,7 @@
 # ⚡ Arcanoid
 
 ![](https://img.shields.io/badge/platform-windows-informational)
+![](https://img.shields.io/github/license/lleballex/arcanoid)
 
 New Arcanoid game written in C++. You can play it or you can use it as an example of OOP project. It has a lot of classes, clear inheritance tree, polymorphism, scenes, event manager.
 
