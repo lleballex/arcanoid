@@ -3,7 +3,7 @@
 ![](https://img.shields.io/badge/platform-windows-informational)
 ![](https://img.shields.io/github/license/lleballex/arcanoid)
 
-New Arcanoid game written in C++. You can play it or you can use it as an example of OOP project. It has a lot of classes, clear inheritance tree, polymorphism, scenes, event manager.
+New Arcanoid game written in C++ and SFML. You can play it or you can use it as an example of OOP project. It has a lot of classes, clear inheritance tree, polymorphism, scenes, event manager.
 
 This game has some differences from classic Arcanoid. There are 4 moving platforms at once - one on each side (you can move ball between platforms by clicking on one when game is not started). Ball can change its color when collides with special blocks. Also you can find 3 types of blocks:
 
