@@ -18,7 +18,7 @@ This game has some differences from classic Arcanoid. There are 4 moving platfor
 
 ## Getting started
 
-Current version of Aracanoid is only available for Windows x64. You can download it [here](https://github.com/lleballex/arcanoid/releases/tag/v1.0.0).
+Current version of Aracanoid is only available for Windows x64. You can download it [here](https://github.com/lleballex/arcanoid/releases).
 
 ## 🙋🏽‍♂️ Contact me
 
