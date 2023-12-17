@@ -5,4 +5,6 @@
 class HorizontalPlatform : public Platform {
 public:
 	HorizontalPlatform();
+
+	void update(float dt);
 };

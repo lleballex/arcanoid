@@ -2,6 +2,6 @@
 
 MultiBlock::MultiBlock(float x, float y) : Block(x, y, COLOR::GREEN) {};
 
-void MultiBlock::onBallCollide(COLOR ballColor) {
-	health -= 1;
+bool MultiBlock::isMulti() {
+	return true;
 }

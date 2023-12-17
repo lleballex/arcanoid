@@ -9,7 +9,7 @@ struct EventHandler {
 	EVENT event;
 	void* sender;
 	void* reciever;
-	std::function<void()> callback;
+	std::function<void(void*)> callback;
 };
 
 struct SFMLEventHandler {
@@ -33,9 +33,12 @@ public:
 
 	static EventManager& getInstance();
 
-	void emit(EVENT event, void *source);
+	void emit(EVENT event, void *sender, void *data=nullptr);
 	void emitSFML(sf::Event *event, sf::RenderWindow *window);
 	void unsubscribe(void* reciever);
+
+	template <class T>
+	void subscribe(EVENT event, void* sender, void (T::*callback)(void*), T* reciever);
 
 	template <class T>
 	void subscribe(EVENT event, void* sender, void (T::* callback)(), T* reciever);
@@ -45,14 +48,24 @@ public:
 };
 
 template <class T>
-void EventManager::subscribe(EVENT event, void *sender, void (T::*callback)(), T *reciever) {
+void EventManager::subscribe(EVENT event, void *sender, void (T::*callback)(void*), T *reciever) {
+	EventHandler handler;
+	handler.event = event;
+	handler.sender = sender;
+	handler.reciever = reciever;
+	handler.callback = std::bind(callback, reciever, std::placeholders::_1);
+	handlers[handlersCount++] = handler;
+}
+
+template <class T>
+void EventManager::subscribe(EVENT event, void* sender, void (T::* callback)(), T* reciever) {
 	EventHandler handler;
 	handler.event = event;
 	handler.sender = sender;
 	handler.reciever = reciever;
 	handler.callback = std::bind(callback, reciever);
 	handlers[handlersCount++] = handler;
-}	
+}
 
 template <class T>
 void EventManager::subscribeSFML(void (T::*callback)(sf::Event*, sf::RenderWindow*), T* reciever) {

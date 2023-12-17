@@ -1,6 +1,7 @@
 #define M_PI 3.14
 
 #include "Ball.h"
+#include "../Game/utils.h"
 
 #include <cmath>
 
@@ -11,6 +12,9 @@ Ball::Ball() : Circle(10, 40, 10) {
 	color = COLOR::WHITE;
 	
 	shape->setFillColor(sf::Color(color));
+
+	eventManager.subscribe(EVENT::GAME_COLLIDE_BALL_BLOCK, nullptr, &Ball::onBlockCollide, this);
+	eventManager.subscribe(EVENT::GAME_COLLIDE_BALL_PLATFORM, nullptr, &Ball::onPlatformCollide, this);
 };
 
 void Ball::update(float dt) {
@@ -23,82 +27,65 @@ void Ball::draw(sf::RenderWindow *window) {
 	window->draw(*shape);
 }
 
-bool Ball::handlePlatformCollide(float plX, float plY, float plWidth, float plHeight) {
-	float *res = getRectCollision(plX, plY, plWidth, plHeight);
+void Ball::onBlockCollide(void* data_) {
+	BallBlockCollideData *data = static_cast<BallBlockCollideData*>(data_);
 
-	if (!res) {
-		return false;
+	if (data->ball == this && data->block->isAlive()) {
+		if (abs(data->collision[1]) > abs(data->collision[0])) {
+			setY(y + data->collision[1]);
+			speedY = -speedY;
+		}
+		else {
+			setX(x + data->collision[0]);
+			speedX = -speedX;
+		}
+
+		if (data->block->isSolid()) {
+			setColor(data->block->getColor());
+		}
 	}
+}
 
-	if ((float)rand() / RAND_MAX >= 0.3) {
-		float offsetX = (float)rand() / RAND_MAX * 400 - 200;
-		float offsetY = (float)rand() / RAND_MAX * 400 - 200;
+void Ball::onPlatformCollide(void* data_) {
+	BallPlatformCollideData* data = static_cast<BallPlatformCollideData*>(data_);
+
+	if ((float)rand() / RAND_MAX >= 0.3 || true) {
+		float offsetX = (float)rand() / RAND_MAX * 500 - 250;
+		float offsetY = (float)rand() / RAND_MAX * 500 - 250;
 		float directionX = centerX - x + offsetX;
 		float directionY = centerY - y + offsetY;
 		float distance = sqrt(directionX * directionX + directionY * directionY);
 
 		speedX = (directionX / distance) * speed;
 		speedY = (directionY / distance) * speed;
-
-		return true;
 	}
 
-	float newAngle = float(rand()) / RAND_MAX * M_PI * 2 - M_PI;
+	//float newAngle = float(rand()) / RAND_MAX * M_PI * 2 - M_PI;
 
-	if (abs(res[1]) > abs(res[0])) {
-		if (res[1] > 0) {
-			speedX = speed * cos(newAngle);
-			speedY = speed * abs(sin(newAngle));
-		}
-		else {
-			speedX = speed * cos(newAngle);
-			speedY = -speed * abs(sin(newAngle));
-		}
+	//if (abs(data->collision[1]) > abs(data->collision[0])) {
+	//	if (data->collision[1] > 0) {
+	//		speedX = speed * cos(newAngle);
+	//		speedY = speed * abs(sin(newAngle));
+	//	}
+	//	else {
+	//		speedX = speed * cos(newAngle);
+	//		speedY = -speed * abs(sin(newAngle));
+	//	}
 
-		setY(y + res[1]);
+	//	setY(y + data->collision[1]);
+	//}
+	//else {
+	//	if (data->collision[0] > 0) {
+	//		speedX = speed * cos(newAngle);
+	//		speedY = speed * sin(newAngle);
+	//	}
+	//	else {
+	//		speedX = -speed * cos(newAngle);
+	//		speedY = speed * sin(newAngle);
+	//	}
 
-		delete[] res;
-		return true;
-	}
-	else {
-		if (res[0] > 0) {
-			speedX = speed * cos(newAngle);
-			speedY = speed * sin(newAngle);
-		}
-		else {
-			speedX = -speed * cos(newAngle);
-			speedY = speed * sin(newAngle);
-		}
-
-		setX(x + res[0]);
-
-		delete[] res;
-		return true;
-	}
-}
-
-
-bool Ball::handleBlockCollide(float blockX, float blockY, float blockWidth, float blockHeight) {
-	float *res = getRectCollision(blockX, blockY, blockWidth, blockHeight);
-
-	if (!res) {
-		return false;
-	}
-	
-	if (abs(res[1]) > abs(res[0])) {
-		setY(y + res[1]);
-		speedY = -speedY;
-
-		delete[] res;
-		return true;
-	}
-	else {
-		setX(x + res[0]);
-		speedX = -speedX;
-
-		delete[] res;
-		return true;
-	}
+	//	setX(x + data->collision[0]);
+	//}
 }
 
 void Ball::setColor(COLOR newColor) {

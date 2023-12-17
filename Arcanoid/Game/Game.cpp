@@ -1,4 +1,5 @@
 #include "Game.h"
+#include "utils.h"
 #include "../SolidBlock/SolidBlock.h"
 #include "../MultiBlock/MultiBlock.h"
 #include "../VerticalPlatform/VerticalPlatform.h"
@@ -10,15 +11,23 @@ Game::Game() {
 	platforms[0] = new HorizontalPlatform;
 	platforms[0]->setPosition((SCREEN_WIDTH - platforms[0]->getWidth()) / 2, 0);
 	eventManager.subscribe(EVENT::CLICK, platforms[0], &Game::setActivePlatform0, this);
+
 	platforms[1] = new HorizontalPlatform;
 	platforms[1]->setPosition((SCREEN_WIDTH - platforms[1]->getWidth()) / 2, SCREEN_HEIGHT - platforms[1]->getHeight());
 	eventManager.subscribe(EVENT::CLICK, platforms[1], &Game::setActivePlatform1, this);
+
 	platforms[2] = new VerticalPlatform;
 	platforms[2]->setPosition(0, (SCREEN_HEIGHT - platforms[2]->getHeight()) / 2);
 	eventManager.subscribe(EVENT::CLICK, platforms[2], &Game::setActivePlatform2, this);
+
 	platforms[3] = new VerticalPlatform;
 	platforms[3]->setPosition(SCREEN_WIDTH - platforms[3]->getWidth(), (SCREEN_HEIGHT - platforms[3]->getHeight()) / 2);
 	eventManager.subscribe(EVENT::CLICK, platforms[3], &Game::setActivePlatform3, this);
+
+	platforms[0]->setBorders(platforms[2]->getWidth(), SCREEN_WIDTH - platforms[3]->getWidth());
+	platforms[1]->setBorders(platforms[2]->getWidth(), SCREEN_WIDTH - platforms[3]->getWidth());
+	platforms[2]->setBorders(platforms[0]->getHeight(), SCREEN_HEIGHT - platforms[1]->getHeight());
+	platforms[3]->setBorders(platforms[0]->getHeight(), SCREEN_HEIGHT - platforms[1]->getHeight());
 
 	for (int i = 0; i < 4; i++) {
 		eventManager.subscribe(EVENT::MOVE, platforms[i], &Game::setInitBallPosition, this);
@@ -171,46 +180,40 @@ void Game::handleSFMLEvent(sf::Event* event, sf::RenderWindow* window) {
 }
 
 void Game::update(float dt) {
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
-		for (int i = 0; i < 4; i++) {
-			platforms[i]->moveLeft(dt, platforms[i]->getHeight());
-		}
-	}
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
-		for (int i = 0; i < 4; i++) {
-			platforms[i]->moveRight(dt, SCREEN_WIDTH - platforms[i]->getHeight());
-		}
-	}
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
-		for (int i = 0; i < 4; i++) {
-			platforms[i]->moveUp(dt, platforms[i]->getWidth());
-		}
-	}
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
-		for (int i = 0; i < 4; i++) {
-			platforms[i]->moveDown(dt, SCREEN_HEIGHT - platforms[i]->getWidth());
-		}
+	for (int i = 0; i < 4; i++) {
+		platforms[i]->update(dt);
 	}
 
 	if (isStarted) {
+		bool hasWon = true;
+
 		ball->update(dt);
 
 		for (int i = 0; i < 4; i++) {
-			ball->handlePlatformCollide(platforms[i]->getX(), platforms[i]->getY(), platforms[i]->getWidth(), platforms[i]->getHeight());
+			float *collision = ball->getRectCollision(platforms[i]->getX(), platforms[i]->getY(), platforms[i]->getWidth(), platforms[i]->getHeight());
+
+			if (collision) {
+				BallPlatformCollideData data;
+				data.ball = ball;
+				data.platform = platforms[i];
+				data.collision = collision;
+				eventManager.emit(GAME_COLLIDE_BALL_PLATFORM, this, &data);
+			}
 		}
 
-		bool hasWon = true;
-
 		for (int i = 0; i < blocksCount; i++) {
-			if (blocks[i]->isAlive()) {
-				if (ball->handleBlockCollide(blocks[i]->getX(), blocks[i]->getY(), blocks[i]->getWidth(), blocks[i]->getHeight())) {
-					blocks[i]->onBallCollide(ball->getColor());
-					if (blocks[i]->isSolid()) {
-						ball->setColor(blocks[i]->getColor());
-					}
-				}
+			float* collision = ball->getRectCollision(blocks[i]->getX(), blocks[i]->getY(), blocks[i]->getWidth(), blocks[i]->getHeight());
 
-				if (!blocks[i]->isSolid() && hasWon) {
+			if (collision) {
+				BallBlockCollideData data;
+				data.ball = ball;
+				data.block = blocks[i];
+				data.collision = collision;
+				eventManager.emit(GAME_COLLIDE_BALL_BLOCK, this, &data);
+			}
+
+			if (blocks[i]->isAlive()) {
+				if (hasWon && blocks[i]->isAlive() && !blocks[i]->isSolid()) {
 					hasWon = false;
 				}
 			}
@@ -222,7 +225,6 @@ void Game::update(float dt) {
 
 		if (!ball->isInsideWeakly(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)) {
 			if (--health <= 0) {
-				// TODO: add kinda plug
 				return eventManager.emit(EVENT::GO_HOME, this);
 			}
 			else {

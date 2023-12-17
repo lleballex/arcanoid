@@ -2,8 +2,8 @@
 #include <iostream>
 
 EventManager::EventManager() {
-	handlers = new EventHandler[100];
-	sfmlHandlers = new SFMLEventHandler[100];
+	handlers = new EventHandler[200];
+	sfmlHandlers = new SFMLEventHandler[200];
 }
 
 EventManager::~EventManager() {
@@ -16,10 +16,10 @@ EventManager& EventManager::getInstance() {
 	return instance;
 }
 
-void EventManager::emit(EVENT event, void *sender) {
+void EventManager::emit(EVENT event, void *sender, void *data) {
 	for (int i = 0; i < handlersCount; i++) {
 		if (handlers[i].event == event && (handlers[i].sender == sender || !handlers[i].sender)) {
-			handlers[i].callback();
+			handlers[i].callback(data);
 		}
 	}
 }

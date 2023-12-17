@@ -5,13 +5,13 @@
 class Platform : public Rect {
 protected:
 	float length = 160, breadth = 20, speed = 1.1;
+	float minBorder = 0, maxBorder = 0;
 	
 public:
 	Platform();
 
+	virtual void update(float dt) {};
 	void draw(sf::RenderWindow *window);
-	void moveLeft(float dt, float minX);
-	void moveRight(float dt, float maxX);
-	void moveUp(float dt, float minY);
-	void moveDown(float dt, float maxY);
+
+	void setBorders(float min, float max);
 };
